@@ -174,23 +174,12 @@ public class GameController : MonoBehaviour
         {
 
             QualifyRound[i].sprite = Flags[ramdomNumber[num][i]].GetComponent<Image>().sprite;
+            
             if(ramdomNumber[num][i] == playerTeam)
             {
-              if(playerTeam == 1)
-                {
-                 
-                }else if(playerTeam == 2)
-                {
-                    playerMatchBetween = 3;
-                }
-                else if (playerTeam == 0)
-                {
-                    playerMatchBetween = 1;
-                }
-                else if (playerTeam == 3)
-                {
-                    playerMatchBetween = 2;
-                }
+                playerMatchBetween = ramdomNumber[num][i + 1];
+                Debug.Log("dddd" + playerTeam + " , " + ramdomNumber[num][i + 1] + " , " + num);
+                
             }
 
         }
@@ -199,8 +188,8 @@ public class GameController : MonoBehaviour
         {
             FinalRound[i].sprite = null;
         }
-        SecondPlayer.transform.GetChild(0).transform.GetChild(0).transform.GetComponent<SpriteRenderer>().sprite = RightSideidelSprites[ramdomNumber[num][playerMatchBetween]];
-        SecondPlayer.transform.GetChild(0).transform.GetChild(1).transform.GetComponent<SpriteRenderer>().sprite = RightSidekickSprites[ramdomNumber[num][playerMatchBetween]];
+        SecondPlayer.transform.GetChild(0).transform.GetChild(0).transform.GetComponent<SpriteRenderer>().sprite = RightSideidelSprites[playerMatchBetween];
+        SecondPlayer.transform.GetChild(0).transform.GetChild(1).transform.GetComponent<SpriteRenderer>().sprite = RightSidekickSprites[playerMatchBetween];
         playerTeamFlag.sprite = Flags[playerTeam].GetComponent<Image>().sprite;
         playerGoalCount.text = "0";
         PlayerIdel.sprite = idelSprites[playerTeam];
