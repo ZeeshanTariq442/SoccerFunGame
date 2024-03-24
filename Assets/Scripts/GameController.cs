@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
@@ -25,6 +26,7 @@ public class GameController : MonoBehaviour
     private int currentFlags;
     private int playerTeam = 0;
     private int playerMatchBetween;
+    public bool isFinal;
     private Dictionary<int, List<int>> ramdomNumber = new Dictionary<int, List<int>>();
     #endregion
     #region ------ UI ------
@@ -53,15 +55,17 @@ public class GameController : MonoBehaviour
     #region ------ Animation and Animator ------
     public Animator PlayerAimator;
     #endregion
+
+    public SoundController soundController;
     // Start is called before the first frame update
     void Start()
     {
-        ramdomNumber.Add(0, new List<int>() {0,2,1,3 });
-        ramdomNumber.Add(1, new List<int>() {1,2,0,3 });
-        ramdomNumber.Add(2, new List<int>() {2,3,1,0});
-        ramdomNumber.Add(3, new List<int>() {2,0,1,3 });
-        MusicControl(PlayerPrefs.GetString("Music") == "ON");
-        SoundControl(PlayerPrefs.GetString("Sound") == "ON");
+        ramdomNumber.Add(0, new List<int>() { 0, 2, 1, 3 });
+        ramdomNumber.Add(1, new List<int>() { 1, 2, 0, 3 });
+        ramdomNumber.Add(2, new List<int>() { 2, 3, 1, 0 });
+        ramdomNumber.Add(3, new List<int>() { 2, 0, 1, 3 });
+        MusicControl(PlayerPrefs.GetString("Music", "ON") == "ON");
+        SoundOff.SetActive(PlayerPrefs.GetString("Sound", "ON") != "ON");
         PanelsController(HomePanel.name);
         NextBtn.interactable = false;
     }
@@ -78,7 +82,7 @@ public class GameController : MonoBehaviour
     {
         NextBtn.interactable = true;
         playerTeam = index;
-        for(int i = 0; i < Flags.Length; i++)
+        for (int i = 0; i < Flags.Length; i++)
         {
             Flags[i].gameObject.transform.GetChild(0).gameObject.SetActive(i == index);
 
@@ -96,11 +100,11 @@ public class GameController : MonoBehaviour
                 Debug.Log(currentFlags);
                 if (currentFlags >= Flags.Length - 1)
                 {
-                
+
                     NextBtn.interactable = false;
                 }
             }
-           
+
 
         }
         else
@@ -110,17 +114,17 @@ public class GameController : MonoBehaviour
             {
                 Flags[currentFlags].gameObject.SetActive(false);
                 currentFlags--;
-                if(currentFlags == 0)
+                if (currentFlags == 0)
                 {
                     PreBtn.interactable = false;
                 }
-                
+
             }
-            
-          
+
+
         }
-      
-    
+
+
     }
     public void PanelsController(string name)
     {
@@ -154,37 +158,58 @@ public class GameController : MonoBehaviour
     }
     public void SoundControl(bool on)
     {
-        if (on)
+        if (PlayerPrefs.GetString("Sound", "ON") == "ON")
         {
-            PlayerPrefs.SetString("Sound", "ON");
-            SoundOff.SetActive(on);
+            SoundOff.SetActive(true);
+            PlayerPrefs.SetString("Sound", "OFF");
         }
         else
         {
-            PlayerPrefs.SetString("Sound", "OFF");
-            SoundOff.SetActive(on);
+            PlayerPrefs.SetString("Sound", "ON");
+            SoundOff.SetActive(false);
         }
+
+
+
+        soundController.SetSound();
     }
 
     public void TeamsQualifyRound()
     {
         int num = Random.Range(0, 3);
-
-        for (int i = 0; i<ramdomNumber[num].Count; i++)
+        for (int i = 0; i < ramdomNumber[num].Count; i++)
         {
-
+            // {0,2,1,3 };
             QualifyRound[i].sprite = Flags[ramdomNumber[num][i]].GetComponent<Image>().sprite;
-            
-            if(ramdomNumber[num][i] == playerTeam)
+
+            if (ramdomNumber[num][i] == playerTeam)
             {
-                playerMatchBetween = ramdomNumber[num][i + 1];
-                Debug.Log("dddd" + playerTeam + " , " + ramdomNumber[num][i + 1] + " , " + num);
-                
+
+                if (ramdomNumber[num].IndexOf(playerTeam) == 3)
+                {
+                    playerMatchBetween = ramdomNumber[num][i - 1];
+
+
+                }
+                else if (ramdomNumber[num].IndexOf(playerTeam) == 1)
+                {
+                    playerMatchBetween = ramdomNumber[num][i - 1];
+
+                }
+
+                else
+                {
+                    playerMatchBetween = ramdomNumber[num][i + 1];
+
+                }
+
+
+
             }
 
         }
 
-        for(int i = 0; i < FinalRound.Length; i++)
+        for (int i = 0; i < FinalRound.Length; i++)
         {
             FinalRound[i].sprite = null;
         }
@@ -194,10 +219,11 @@ public class GameController : MonoBehaviour
         playerGoalCount.text = "0";
         PlayerIdel.sprite = idelSprites[playerTeam];
         PlayerKick.sprite = kickSprites[playerTeam];
-       
-        StartCoroutine(CounterTimer());
+
+        //StartCoroutine(CounterTimer());
+        RandomScoreGenerate();
         Invoke(nameof(GoToGamePlay), 5);
-      
+
     }
 
     private void GoToGamePlay()
@@ -207,9 +233,13 @@ public class GameController : MonoBehaviour
         SecondPlayer.SetActive(true);
         Football.SetActive(true);
     }
+    private void RandomScoreGenerate()
+    {
+        counterTimer.text = (Random.Range(4, 10)).ToString();
+    }
     private IEnumerator CounterTimer()
     {
-     
+
         yield return new WaitForSeconds(1);
         counterTimer.text = "3";
         yield return new WaitForSeconds(1);
@@ -218,5 +248,41 @@ public class GameController : MonoBehaviour
         counterTimer.text = "1";
         yield return new WaitForSeconds(1);
         counterTimer.text = "0";
+    }
+
+    public void ReloadSecne()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void FinalRoundGame()
+    {
+        isFinal = true;
+        RandomScoreGenerate();
+        PanelsController(Group_Map.name);
+        SecondPlayer.transform.GetChild(0).transform.GetChild(0).transform.GetComponent<SpriteRenderer>().sprite = RightSideidelSprites[PlayerPrefs.GetInt("FinalTeam2")];
+        SecondPlayer.transform.GetChild(0).transform.GetChild(1).transform.GetComponent<SpriteRenderer>().sprite = RightSidekickSprites[PlayerPrefs.GetInt("FinalTeam2")];
+
+
+
+        for (int i = 0; i < 2; i++)
+        {
+            if (QualifyRound[i].sprite.name == Flags[playerTeam].GetComponent<Image>().sprite.name)
+            {
+                FinalRound[0].sprite = Flags[playerTeam].GetComponent<Image>().sprite;
+                FinalRound[1].sprite = QualifyRound[2].GetComponent<Image>().sprite;
+            }
+
+        }
+        for (int i = 2; i < 4; i++)
+        {
+            if (QualifyRound[i].sprite.name == Flags[playerTeam].GetComponent<Image>().sprite.name)
+            {
+                FinalRound[1].sprite = Flags[playerTeam].GetComponent<Image>().sprite;
+                FinalRound[0].sprite = QualifyRound[1].GetComponent<Image>().sprite;
+            }
+
+        }
+
+        Invoke(nameof(GoToGamePlay), 3);
     }
 }
