@@ -19,13 +19,14 @@ public class FootBall : MonoBehaviour
     public GameController gameController;
     bool isGoal;
     bool isGameFinished;
-
+    public Text secondPlayerCounterScore;
     public void ResetValues()
     {
         transform.localPosition = Point1.transform.localPosition;
         scoreCount.text = "0";
         counter = 0;
         secondPlayerCounter = 0;
+        secondPlayerCounterScore.text = "0";
         ramdomNum = 0;
         isGoal = false;
         isPlayer = false;
@@ -33,51 +34,83 @@ public class FootBall : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.name == "kick" && collision.gameObject.tag == "Player")
-        {
-            Debug.Log("Player");
-            counter++;
-            ramdomNum = Random.Range(1, 10);
-            scoreCount.text = counter.ToString();
-            Invoke(nameof(playSound), 0.05f);
-            isPlayer = true;
-            if (counter >= int.Parse(gameController.counterTimer.text.ToString()))
+       
+           
+            if (collision.gameObject.name == "kick" && collision.gameObject.tag == "Player")
             {
-                if (!isGameFinished)
+                        ramdomNum = Random.Range(1, 10);
+                        Debug.Log("Player");
+                if(ramdomNum < 9)
                 {
-                    isGameFinished = true;
-                    goalAudio.Play();
+                    counter++;
+                    isPlayer = true;
+                }
+                else
+                {
+                   
+                    Invoke(nameof(GameLoss), 1);
+                }
+     
+                scoreCount.text = counter.ToString();
+
+                Invoke(nameof(playSound), 0.05f);
+               
+                if (counter == int.Parse(gameController.countScoure.text.ToString()))
+                {
+                    if (!isGameFinished)
+                    {
+                        ramdomNum = 9;
+                        isGoal = true;
+                        isPlayer = true;
+                        goalAudio.Play();
+                        Invoke(nameof(GameWin), 1);
+                    }
+
+                }
+            }
+            if (collision.gameObject.name == "kick" && collision.gameObject.tag == "Player2")
+            {
+                Debug.Log("NOt Player");
+              
+              
+                gameController.PlayerAimator.SetBool("kick", false);
+                animator.SetBool("kick", false);
+             
+                if (ramdomNum < 9)
+                {
+                    
+                    secondPlayerCounter++;
+                    isPlayer = false;
+                }
+                else
+                {
                     Invoke(nameof(GameWin), 1);
                 }
                 
+                secondPlayerCounterScore.text = secondPlayerCounter.ToString();
             }
-        }
-        else if (collision.gameObject.name == "kick" && collision.gameObject.tag == "Player2")
-        {
-            Debug.Log("NOt Player");
-            isPlayer = false;
-            ramdomNum = Random.Range(1, 10);
-            gameController.PlayerAimator.SetBool("kick", false);
-            animator.SetBool("kick", false);
-        }
-        Debug.Log(collision.gameObject.name + "   " + collision.gameObject.tag);
-        if (collision.gameObject.tag == "kick" && collision.gameObject.name == "point")
-        {
-            secondPlayerCounter++;
-            Debug.Log("point");
-            if (secondPlayerCounter == int.Parse(gameController.counterTimer.text.ToString()))
+            Debug.Log(collision.gameObject.name + "   " + collision.gameObject.tag);
+            if (collision.gameObject.tag == "kick" && collision.gameObject.name == "point")
             {
-                if (!isGameFinished)
+            ramdomNum = Random.Range(1, 10);
+            Debug.Log("point");
+               if (secondPlayerCounter == int.Parse(gameController.countScoure.text.ToString()) )
                 {
-                    isGameFinished = true;
-                    goalAudio.Play();
-                    Invoke(nameof(GameLoss), 1);
-                }
-               
-            }
-            Invoke(nameof(playSound), 0.7f);
-            animator.SetBool("kick", true);
+                    if (!isGameFinished)
+                    {
+                        isGoal = true;
+                        ramdomNum = 9;
+                        goalAudio.Play();
+                        isPlayer = false;
+                        Invoke(nameof(GameLoss), 1);
+                    }
+
+                }    
+                Invoke(nameof(playSound), 0.7f);
+                animator.SetBool("kick", true);
+            
         }
+       
     }
     private void playSound()
     {
@@ -85,36 +118,39 @@ public class FootBall : MonoBehaviour
     }
     private void Update()
     {
-      
         
-        if (ramdomNum < 9)
-        {
-            if (isPlayer)
+            if (ramdomNum < 9)
             {
-                transform.localPosition = Vector3.Lerp(transform.position, Point2.transform.localPosition, 2 * Time.deltaTime);
+                if (isPlayer)
+                {
+                    transform.localPosition = Vector3.Lerp(transform.position, Point2.transform.localPosition, 2 * Time.deltaTime);
+                }
+                else
+                {
+                    transform.localPosition = Vector3.Lerp(transform.position, Point1.transform.localPosition, 2 * Time.deltaTime);
+                }
             }
-            else
+            if(isGoal)
             {
-                transform.localPosition = Vector3.Lerp(transform.position, Point1.transform.localPosition, 2 * Time.deltaTime);
+
+                if (isPlayer)
+                {
+                    Invoke(nameof(GameWin), 1);
+                    transform.position = Vector3.Lerp(transform.position, goalPoint, 2 * Time.deltaTime);
+                }
+                else
+                {
+                    Invoke(nameof(GameLoss), 1);
+                    transform.position = Vector3.Lerp(transform.position, goalPoint, 2 * Time.deltaTime);
+
+                }
+                goalAudio.Play();
+
             }
-        }
-        else
-        {
-          
-            if (isPlayer)
-            {
-                Invoke(nameof(GameLoss), 1);
-                transform.position = Vector3.Lerp(transform.position, goalPoint, 2 * Time.deltaTime);
-            }
-            else
-            {
-                Invoke(nameof(GameWin), 1);
-                transform.position = Vector3.Lerp(transform.position, goalPoint, 2 * Time.deltaTime);
-                
-            }
-            goalAudio.Play();
-           
-        }
+            
+        
+        Debug.Log("Player...." + isPlayer);
+        
 
     }
 

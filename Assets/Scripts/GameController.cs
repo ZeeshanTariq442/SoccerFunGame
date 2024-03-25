@@ -16,6 +16,8 @@ public class GameController : MonoBehaviour
     public GameObject Group_Map;
     public GameObject WinPanel;
     public GameObject LossPanel;
+    public GameObject TeamPlayer;
+    public GameObject MatchBetween;
     #endregion
     #region ------ Team Flags ------
     public GameObject[] Flags;
@@ -57,6 +59,12 @@ public class GameController : MonoBehaviour
     #endregion
 
     public SoundController soundController;
+    public Transform cam;
+    public Image TeamOne;
+    public Image TeamTwo;
+    public Text countScoure;
+    public Image TeamSecondGamePlay;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -136,9 +144,19 @@ public class GameController : MonoBehaviour
         SettingPanel.SetActive(name == SettingPanel.name);
         PausePanel.SetActive(name == PausePanel.name);
         SelectTeam_Panel.SetActive(name == SelectTeam_Panel.name);
+        TeamPlayer.SetActive(name == SelectTeam_Panel.name);
         Group_Map.SetActive(name == Group_Map.name);
         WinPanel.SetActive(name == WinPanel.name);
         LossPanel.SetActive(name == LossPanel.name);
+        MatchBetween.SetActive(name == MatchBetween.name);
+        if(name == SelectTeam_Panel.name)
+        {
+            cam.transform.position= new Vector3(cam.transform.position.x,1.5f, cam.transform.position.z);
+        }
+        else
+        {
+            cam.transform.position = new Vector3(cam.transform.position.x, 1f, cam.transform.position.z);
+        }
 
 
     }
@@ -216,16 +234,22 @@ public class GameController : MonoBehaviour
         SecondPlayer.transform.GetChild(0).transform.GetChild(0).transform.GetComponent<SpriteRenderer>().sprite = RightSideidelSprites[playerMatchBetween];
         SecondPlayer.transform.GetChild(0).transform.GetChild(1).transform.GetComponent<SpriteRenderer>().sprite = RightSidekickSprites[playerMatchBetween];
         playerTeamFlag.sprite = Flags[playerTeam].GetComponent<Image>().sprite;
+        TeamSecondGamePlay.sprite = Flags[playerMatchBetween].GetComponent<Image>().sprite;
         playerGoalCount.text = "0";
         PlayerIdel.sprite = idelSprites[playerTeam];
         PlayerKick.sprite = kickSprites[playerTeam];
-
-        //StartCoroutine(CounterTimer());
+        TeamOne.sprite = Flags[playerTeam].GetComponent<Image>().sprite;
+        TeamTwo.sprite = Flags[playerMatchBetween].GetComponent<Image>().sprite;
+        StartCoroutine(CounterTimer());
         RandomScoreGenerate();
-        Invoke(nameof(GoToGamePlay), 5);
+        Invoke(nameof(MatchBetweenPanel), 4);
 
     }
-
+    private void MatchBetweenPanel()
+    {
+        PanelsController(MatchBetween.name);
+        Invoke(nameof(GoToGamePlay), 2);
+    }
     private void GoToGamePlay()
     {
         PanelsController(GamePlay.name);
@@ -235,7 +259,7 @@ public class GameController : MonoBehaviour
     }
     private void RandomScoreGenerate()
     {
-        counterTimer.text = (Random.Range(4, 10)).ToString();
+        countScoure.text = (Random.Range(4, 8)).ToString();
     }
     private IEnumerator CounterTimer()
     {
@@ -270,6 +294,10 @@ public class GameController : MonoBehaviour
             {
                 FinalRound[0].sprite = Flags[playerTeam].GetComponent<Image>().sprite;
                 FinalRound[1].sprite = QualifyRound[2].GetComponent<Image>().sprite;
+
+                TeamOne.sprite = Flags[playerTeam].GetComponent<Image>().sprite;
+                TeamTwo.sprite = QualifyRound[2].GetComponent<Image>().sprite;
+                TeamSecondGamePlay.sprite = QualifyRound[2].GetComponent<Image>().sprite;
             }
 
         }
@@ -279,10 +307,14 @@ public class GameController : MonoBehaviour
             {
                 FinalRound[1].sprite = Flags[playerTeam].GetComponent<Image>().sprite;
                 FinalRound[0].sprite = QualifyRound[1].GetComponent<Image>().sprite;
+
+                TeamSecondGamePlay.sprite = QualifyRound[1].GetComponent<Image>().sprite;
+                TeamOne.sprite = QualifyRound[1].GetComponent<Image>().sprite;
+                TeamTwo.sprite = Flags[playerTeam].GetComponent<Image>().sprite;
             }
 
         }
-
-        Invoke(nameof(GoToGamePlay), 3);
+       
+        Invoke(nameof(MatchBetweenPanel), 3);
     }
 }
