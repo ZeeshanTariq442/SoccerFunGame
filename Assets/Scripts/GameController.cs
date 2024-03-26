@@ -64,7 +64,8 @@ public class GameController : MonoBehaviour
     public Image TeamTwo;
     public Text countScoure;
     public Image TeamSecondGamePlay;
-    
+    public Text scoreCount;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -260,6 +261,7 @@ public class GameController : MonoBehaviour
     private void RandomScoreGenerate()
     {
         countScoure.text = (Random.Range(4, 8)).ToString();
+        scoreCount.text = countScoure.text;
     }
     private IEnumerator CounterTimer()
     {
@@ -299,6 +301,11 @@ public class GameController : MonoBehaviour
                 TeamTwo.sprite = QualifyRound[2].GetComponent<Image>().sprite;
                 TeamSecondGamePlay.sprite = QualifyRound[2].GetComponent<Image>().sprite;
             }
+            if (playerMatchBetween != i && playerTeam != i)
+            {
+                SecondPlayer.transform.GetChild(0).transform.GetChild(0).transform.GetComponent<SpriteRenderer>().sprite = RightSideidelSprites[i];
+                SecondPlayer.transform.GetChild(0).transform.GetChild(1).transform.GetComponent<SpriteRenderer>().sprite = RightSidekickSprites[i];
+            }
 
         }
         for (int i = 2; i < 4; i++)
@@ -311,6 +318,11 @@ public class GameController : MonoBehaviour
                 TeamSecondGamePlay.sprite = QualifyRound[1].GetComponent<Image>().sprite;
                 TeamOne.sprite = QualifyRound[1].GetComponent<Image>().sprite;
                 TeamTwo.sprite = Flags[playerTeam].GetComponent<Image>().sprite;
+            }
+            if (playerMatchBetween != i && playerTeam != i)
+            {
+                SecondPlayer.transform.GetChild(0).transform.GetChild(0).transform.GetComponent<SpriteRenderer>().sprite = RightSideidelSprites[i];
+                SecondPlayer.transform.GetChild(0).transform.GetChild(1).transform.GetComponent<SpriteRenderer>().sprite = RightSidekickSprites[i];
             }
 
         }

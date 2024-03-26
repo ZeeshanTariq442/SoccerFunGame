@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028355, g: 0.22571374, b: 0.30692255, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028359, g: 0.22571385, b: 0.30692258, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5885,6 +5885,7 @@ MonoBehaviour:
   TeamTwo: {fileID: 814498547}
   countScoure: {fileID: 808512663}
   TeamSecondGamePlay: {fileID: 1591004708}
+  scoreCount: {fileID: 1230975364}
 --- !u!4 &914214185
 Transform:
   m_ObjectHideFlags: 0

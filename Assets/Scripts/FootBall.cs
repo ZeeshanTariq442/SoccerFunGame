@@ -32,6 +32,7 @@ public class FootBall : MonoBehaviour
         isPlayer = false;
         isGameFinished = false;
     }
+    
     private void OnCollisionEnter2D(Collision2D collision)
     {
        
@@ -50,8 +51,8 @@ public class FootBall : MonoBehaviour
                    
                     Invoke(nameof(GameLoss), 1);
                 }
-     
-                scoreCount.text = counter.ToString();
+
+            secondPlayerCounterScore.text = counter.ToString();
 
                 Invoke(nameof(playSound), 0.05f);
                
@@ -87,7 +88,7 @@ public class FootBall : MonoBehaviour
                     Invoke(nameof(GameWin), 1);
                 }
                 
-                secondPlayerCounterScore.text = secondPlayerCounter.ToString();
+              //  secondPlayerCounterScore.text = secondPlayerCounter.ToString();
             }
             Debug.Log(collision.gameObject.name + "   " + collision.gameObject.tag);
             if (collision.gameObject.tag == "kick" && collision.gameObject.name == "point")
