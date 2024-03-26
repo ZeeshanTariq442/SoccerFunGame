@@ -39,8 +39,8 @@ public class FootBall : MonoBehaviour
            
             if (collision.gameObject.name == "kick" && collision.gameObject.tag == "Player")
             {
-                        ramdomNum = Random.Range(1, 10);
-                        Debug.Log("Player");
+                ramdomNum = Random.Range(1, 10);
+                Debug.Log("Player");
                 if(ramdomNum < 9)
                 {
                     counter++;
@@ -79,8 +79,8 @@ public class FootBall : MonoBehaviour
              
                 if (ramdomNum < 9)
                 {
-                    
-                    secondPlayerCounter++;
+
+                    counter++;
                     isPlayer = false;
                 }
                 else
@@ -88,7 +88,7 @@ public class FootBall : MonoBehaviour
                     Invoke(nameof(GameWin), 1);
                 }
                 
-              //  secondPlayerCounterScore.text = secondPlayerCounter.ToString();
+                secondPlayerCounterScore.text = counter.ToString();
             }
             Debug.Log(collision.gameObject.name + "   " + collision.gameObject.tag);
             if (collision.gameObject.tag == "kick" && collision.gameObject.name == "point")
