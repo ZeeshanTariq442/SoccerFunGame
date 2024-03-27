@@ -66,6 +66,17 @@ public class GameController : MonoBehaviour
     public Image TeamSecondGamePlay;
     public Text scoreCount;
 
+
+    public void defaultValue()
+    {
+        currentFlags = 0;
+        playerTeam = 0;
+        playerMatchBetween = 0;
+        isFinal = false;
+        playerGoalCount.text = "0";
+        counterTimer.text = "0";
+        scoreCount.text = "0";
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -265,8 +276,6 @@ public class GameController : MonoBehaviour
     }
     private IEnumerator CounterTimer()
     {
-
-        yield return new WaitForSeconds(1);
         counterTimer.text = "3";
         yield return new WaitForSeconds(1);
         counterTimer.text = "2";
@@ -282,6 +291,7 @@ public class GameController : MonoBehaviour
     }
     public void FinalRoundGame()
     {
+        StartCoroutine(CounterTimer());
         isFinal = true;
         RandomScoreGenerate();
         PanelsController(Group_Map.name);

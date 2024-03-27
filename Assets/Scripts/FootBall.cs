@@ -35,49 +35,64 @@ public class FootBall : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       
-           
             if (collision.gameObject.name == "kick" && collision.gameObject.tag == "Player")
             {
-                ramdomNum = Random.Range(1, 10);
-                Debug.Log("Player");
-                if(ramdomNum < 9)
+            ramdomNum = Random.Range(1, 25);
+            Debug.Log("Player");
+                if(ramdomNum != 11)
                 {
                     counter++;
                     isPlayer = true;
                 }
                 else
                 {
-                   
                     Invoke(nameof(GameLoss), 1);
                 }
 
-            secondPlayerCounterScore.text = counter.ToString();
-
-                Invoke(nameof(playSound), 0.05f);
-               
-                if (counter == int.Parse(gameController.countScoure.text.ToString()))
+          
+            if (counter > int.Parse(gameController.countScoure.text.ToString()))
+            {
+                if (!isGameFinished)
                 {
-                    if (!isGameFinished)
-                    {
-                        ramdomNum = 9;
-                        isGoal = true;
-                        isPlayer = true;
-                        goalAudio.Play();
-                        Invoke(nameof(GameWin), 1);
-                    }
-
+                    counter--;
+                    isGoal = true;
+                    isPlayer = true;
+                    goalAudio.Play();
+                    Invoke(nameof(GameWin), 1);
                 }
+
             }
+            secondPlayerCounterScore.text = counter.ToString();
+            Invoke(nameof(playSound), 0.05f);
+               
+               
+        }
+        if (collision.gameObject.tag == "Player" && collision.gameObject.name == "point")
+        {
+            
+            
+        }
             if (collision.gameObject.name == "kick" && collision.gameObject.tag == "Player2")
             {
                 Debug.Log("NOt Player");
-              
-              
-                gameController.PlayerAimator.SetBool("kick", false);
-                animator.SetBool("kick", false);
-             
-                if (ramdomNum < 9)
+
+            ramdomNum = Random.Range(1, 25);
+            gameController.PlayerAimator.SetBool("kick", false);
+            animator.SetBool("kick", false);
+            if (counter >= int.Parse(gameController.countScoure.text.ToString()))
+            {
+
+                if (!isGameFinished)
+                {
+                    counter--;
+                    isGoal = true;
+                    ramdomNum = 9;
+                    goalAudio.Play();
+                    Invoke(nameof(GameLoss), 1);
+                }
+
+            }
+            if (ramdomNum != 11)
                 {
 
                     counter++;
@@ -89,24 +104,16 @@ public class FootBall : MonoBehaviour
                 }
                 
                 secondPlayerCounterScore.text = counter.ToString();
-            }
-            Debug.Log(collision.gameObject.name + "   " + collision.gameObject.tag);
+          
+            Debug.Log("point");
+            
+        }
+
+
+
             if (collision.gameObject.tag == "kick" && collision.gameObject.name == "point")
             {
-            ramdomNum = Random.Range(1, 10);
-            Debug.Log("point");
-               if (secondPlayerCounter == int.Parse(gameController.countScoure.text.ToString()) )
-                {
-                    if (!isGameFinished)
-                    {
-                        isGoal = true;
-                        ramdomNum = 9;
-                        goalAudio.Play();
-                        isPlayer = false;
-                        Invoke(nameof(GameLoss), 1);
-                    }
-
-                }    
+                 
                 Invoke(nameof(playSound), 0.7f);
                 animator.SetBool("kick", true);
             
@@ -119,8 +126,8 @@ public class FootBall : MonoBehaviour
     }
     private void Update()
     {
-        
-            if (ramdomNum < 9)
+        Debug.Log(ramdomNum + "  ,..,");
+            if (!isGoal)
             {
                 if (isPlayer)
                 {
@@ -131,6 +138,7 @@ public class FootBall : MonoBehaviour
                     transform.localPosition = Vector3.Lerp(transform.position, Point1.transform.localPosition, 2 * Time.deltaTime);
                 }
             }
+
             if(isGoal)
             {
 
