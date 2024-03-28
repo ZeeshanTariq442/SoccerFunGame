@@ -54,7 +54,7 @@ public class FootBall : MonoBehaviour
             {
                 if (!isGameFinished)
                 {
-                    counter--;
+                   // counter--;
                     isGoal = true;
                     isPlayer = true;
                     goalAudio.Play();
@@ -84,7 +84,7 @@ public class FootBall : MonoBehaviour
 
                 if (!isGameFinished)
                 {
-                    counter--;
+                   // counter--;
                     isGoal = true;
                     ramdomNum = 9;
                     goalAudio.Play();
